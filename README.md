@@ -1,4 +1,4 @@
-philips-hue-python-tools
+Philips Hue Python Tools
 ========================
 
-Python tools for the Philips Hue API
+For now, this is just a library for RGB-CIE1931 color conversion.
