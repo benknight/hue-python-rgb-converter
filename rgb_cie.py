@@ -1,6 +1,6 @@
 """
 Library for RGB / CIE1931 coversion.
-Ported and extended from Bryan Johnson's JavaScript implemntation:
+Ported and extended from Bryan Johnson's JavaScript implementation:
 https://github.com/bjohnso5/hue-hacking
 
 Copyright (c) 2014 Benjamin Knight / MIT License.
@@ -134,7 +134,7 @@ class ColorHelper:
         return xyPoint
 
     def getRGBFromXYAndBrightness(self, x, y, bri=1):
-        """Inverse of `getXYPointFromRGB`. Returns a rgb tuplet for given x, y values.
+        """Returns a rgb tuplet for given x, y values.  Not actually an inverse of `getXYPointFromRGB`.
         Implementation of the instructions found on the Philips Hue iOS SDK docs: http://goo.gl/kWKXKl
         """
         xyPoint = XYPoint(x, y)
@@ -181,25 +181,24 @@ class Converter:
     color = ColorHelper()
 
     def hexToCIE1931(self, h):
-        """Converts hexadecimal colors represented as a String to approximate CIE
-        1931 coordinates. May not produce accurate values."""
+        """Converts hexadecimal colors represented as a String to approximate CIE 1931 coordinates. 
+        May not produce accurate values."""
         rgb = self.color.hexToRGB(h)
         return self.rgbToCIE1931(rgb[0], rgb[1], rgb[2])
 
     def rgbToCIE1931(self, red, green, blue):
-        """Converts red, green and blue integer values to approximate CIE 1931
-        x and y coordinates. Algorithm from:
-        http://www.easyrgb.com/index.php?X=MATH&H=02#text2. May not produce
-        accurate values.
+        """Converts red, green and blue integer values to approximate CIE 1931 x and y coordinates. 
+        Algorithm from: http://www.easyrgb.com/index.php?X=MATH&H=02#text2. 
+        May not produce accurate values.
         """
         point = self.color.getXYPointFromRGB(red, green, blue)
         return [point.x, point.y]
 
     def getCIEColor(self, hexColor=None):
-        """Returns the approximate CIE 1931 x,y coordinates represented by the
-        supplied hexColor parameter, or of a random color if the parameter
-        is not passed. The point of this function is to let people set a lamp's
-        color to any random color. Arguably this should be implemented elsewhere."""
+        """Returns the approximate CIE 1931 x, y coordinates represented by the supplied hexColor parameter,
+        or of a random color if the parameter is not passed. 
+        The point of this function is to let people set a lamp's color to any random color. 
+        Arguably this should be implemented elsewhere."""
         xy = []
 
         if hexColor:
@@ -214,7 +213,6 @@ class Converter:
         return xy
 
     def CIE1931ToHex(self, x, y, bri=1):
-        """Converts CIE 1931 x and y coordinates and brightness value from 0 to 1
-        to a CSS hex color."""
+        """Converts CIE 1931 x and y coordinates and brightness value from 0 to 1 to a CSS hex color."""
         r, g, b = self.color.getRGBFromXYAndBrightness(x, y, bri)
         return self.color.rgbToHex(r, g, b)
