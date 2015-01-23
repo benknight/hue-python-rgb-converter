@@ -121,8 +121,11 @@ class ColorHelper:
         Y = r * 0.2225045 + g * 0.7168786 + b * 0.0406169
         Z = r * 0.0139322 + g * 0.0971045 + b * 0.7141733
 
-        cx = X / (X + Y + Z)
-        cy = Y / (X + Y + Z)
+        if X + Y + Z == 0:
+            cx = cy = 0
+        else:
+            cx = X / (X + Y + Z)
+            cy = Y / (X + Y + Z)
 
         # Check if the given XY value is within the colourreach of our lamps.
         xyPoint = XYPoint(cx, cy)
@@ -181,14 +184,14 @@ class Converter:
     color = ColorHelper()
 
     def hexToCIE1931(self, h):
-        """Converts hexadecimal colors represented as a String to approximate CIE 1931 coordinates. 
+        """Converts hexadecimal colors represented as a String to approximate CIE 1931 coordinates.
         May not produce accurate values."""
         rgb = self.color.hexToRGB(h)
         return self.rgbToCIE1931(rgb[0], rgb[1], rgb[2])
 
     def rgbToCIE1931(self, red, green, blue):
-        """Converts red, green and blue integer values to approximate CIE 1931 x and y coordinates. 
-        Algorithm from: http://www.easyrgb.com/index.php?X=MATH&H=02#text2. 
+        """Converts red, green and blue integer values to approximate CIE 1931 x and y coordinates.
+        Algorithm from: http://www.easyrgb.com/index.php?X=MATH&H=02#text2.
         May not produce accurate values.
         """
         point = self.color.getXYPointFromRGB(red, green, blue)
@@ -196,8 +199,8 @@ class Converter:
 
     def getCIEColor(self, hexColor=None):
         """Returns the approximate CIE 1931 x, y coordinates represented by the supplied hexColor parameter,
-        or of a random color if the parameter is not passed. 
-        The point of this function is to let people set a lamp's color to any random color. 
+        or of a random color if the parameter is not passed.
+        The point of this function is to let people set a lamp's color to any random color.
         Arguably this should be implemented elsewhere."""
         xy = []
 
