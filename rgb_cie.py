@@ -13,12 +13,27 @@ from collections import namedtuple
 # Represents a CIE 1931 XY coordinate pair.
 XYPoint = namedtuple('XYPoint', ['x', 'y'])
 
+# LivingColors Bloom, Aura, Light Strips and Iris
+GamutA = (
+    XYPoint(0.704, 0.296),
+    XYPoint(0.2151, 0.7106),
+    XYPoint(0.138, 0.08),
+)
+
+# Hue bulbs
+GamutB = (
+    XYPoint(0.675, 0.322),
+    XYPoint(0.4091, 0.518),
+    XYPoint(0.167, 0.04),
+)
+
 
 class ColorHelper:
 
-    Red = XYPoint(0.675, 0.322)
-    Lime = XYPoint(0.4091, 0.518)
-    Blue = XYPoint(0.167, 0.04)
+    def __init__(self, gamut=GamutB):
+        self.Red = gamut[0]
+        self.Lime = gamut[1]
+        self.Blue = gamut[2]
 
     def hexToRed(self, hex):
         """Parses a valid hex color string and returns the Red RGB integer value."""
@@ -34,7 +49,7 @@ class ColorHelper:
 
     def hexToRGB(self, h):
         """Converts a valid hex color string to an RGB array."""
-        rgb = [self.hexToRed(h), self.hexToGreen(h), self.hexToBlue(h)]
+        rgb = (self.hexToRed(h), self.hexToGreen(h), self.hexToBlue(h))
         return rgb
 
     def rgbToHex(self, r, g, b):
@@ -117,15 +132,12 @@ class ColorHelper:
         g = ((green + 0.055) / (1.0 + 0.055))**2.4 if (green > 0.04045) else (green / 12.92)
         b = ((blue + 0.055) / (1.0 + 0.055))**2.4 if (blue > 0.04045) else (blue / 12.92)
 
-        X = r * 0.4360747 + g * 0.3850649 + b * 0.0930804
-        Y = r * 0.2225045 + g * 0.7168786 + b * 0.0406169
-        Z = r * 0.0139322 + g * 0.0971045 + b * 0.7141733
+        X = r * 0.664511 + g * 0.154324 + b * 0.162028
+        Y = r * 0.283881 + g * 0.668433 + b * 0.047685
+        Z = r * 0.000088 + g * 0.072310 + b * 0.986039
 
-        if X + Y + Z == 0:
-            cx = cy = 0
-        else:
-            cx = X / (X + Y + Z)
-            cy = Y / (X + Y + Z)
+        cx = X / (X + Y + Z)
+        cy = Y / (X + Y + Z)
 
         # Check if the given XY value is within the colourreach of our lamps.
         xyPoint = XYPoint(cx, cy)
@@ -137,14 +149,15 @@ class ColorHelper:
         return xyPoint
 
     def getRGBFromXYAndBrightness(self, x, y, bri=1):
-        """Returns a rgb tuplet for given x, y values.  Not actually an inverse of `getXYPointFromRGB`.
+        """Inverse of `getXYPointFromRGB`. Returns (r, g, b) for given x, y values.
         Implementation of the instructions found on the Philips Hue iOS SDK docs: http://goo.gl/kWKXKl
         """
-        xyPoint = XYPoint(x, y)
-
+        # The xy to color conversion is almost the same, but in reverse order.
         # Check if the xy value is within the color gamut of the lamp.
         # If not continue with step 2, otherwise step 3.
         # We do this to calculate the most accurate color the given light can actually do.
+        xyPoint = XYPoint(x, y)
+
         if not self.checkPointInLampsReach(xyPoint):
             # Calculate the closest point on the color gamut triangle
             # and use that as xy value See step 6 of color to xy.
@@ -155,18 +168,18 @@ class ColorHelper:
         X = (Y / xyPoint.y) * xyPoint.x
         Z = (Y / xyPoint.y) * (1 - xyPoint.x - xyPoint.y)
 
-        # Convert to RGB using Wide RGB D65 conversion.
+        # Convert to RGB using Wide RGB D65 conversion
         r =  X * 1.612 - Y * 0.203 - Z * 0.302
         g = -X * 0.509 + Y * 1.412 + Z * 0.066
         b =  X * 0.026 - Y * 0.072 + Z * 0.962
 
-        # Apply reverse gamma correction.
+        # Apply reverse gamma correction
         r, g, b = map(
             lambda x: (12.92 * x) if (x <= 0.0031308) else ((1.0 + 0.055) * pow(x, (1.0 / 2.4)) - 0.055),
             [r, g, b]
         )
 
-        # Bring all negative components to zero.
+        # Bring all negative components to zero
         r, g, b = map(lambda x: max(0, x), [r, g, b])
 
         # If one component is greater than 1, weight components by that value.
@@ -176,32 +189,35 @@ class ColorHelper:
 
         r, g, b = map(lambda x: int(x * 255), [r, g, b])
 
+        # Convert the RGB values to your color object The rgb values from the above formulas are between 0.0 and 1.0.
         return (r, g, b)
 
 
 class Converter:
 
-    color = ColorHelper()
+    def __init__(self, gamut):
+        self.color = ColorHelper(gamut)
 
     def hexToCIE1931(self, h):
-        """Converts hexadecimal colors represented as a String to approximate CIE 1931 coordinates.
-        May not produce accurate values."""
+        """Converts hexadecimal colors represented as a String to approximate CIE
+        1931 coordinates. May not produce accurate values."""
         rgb = self.color.hexToRGB(h)
         return self.rgbToCIE1931(rgb[0], rgb[1], rgb[2])
 
     def rgbToCIE1931(self, red, green, blue):
-        """Converts red, green and blue integer values to approximate CIE 1931 x and y coordinates.
-        Algorithm from: http://www.easyrgb.com/index.php?X=MATH&H=02#text2.
-        May not produce accurate values.
+        """Converts red, green and blue integer values to approximate CIE 1931
+        x and y coordinates. Algorithm from:
+        http://www.easyrgb.com/index.php?X=MATH&H=02#text2. May not produce
+        accurate values.
         """
         point = self.color.getXYPointFromRGB(red, green, blue)
         return [point.x, point.y]
 
     def getCIEColor(self, hexColor=None):
-        """Returns the approximate CIE 1931 x, y coordinates represented by the supplied hexColor parameter,
-        or of a random color if the parameter is not passed.
-        The point of this function is to let people set a lamp's color to any random color.
-        Arguably this should be implemented elsewhere."""
+        """Returns the approximate CIE 1931 x,y coordinates represented by the
+        supplied hexColor parameter, or of a random color if the parameter
+        is not passed. The point of this function is to let people set a lamp's
+        color to any random color. Arguably this should be implemented elsewhere."""
         xy = []
 
         if hexColor:
@@ -215,7 +231,14 @@ class Converter:
 
         return xy
 
-    def CIE1931ToHex(self, x, y, bri=1):
-        """Converts CIE 1931 x and y coordinates and brightness value from 0 to 1 to a CSS hex color."""
+    def xyToHEX(self, x, y, bri=1):
+        """Converts CIE 1931 x and y coordinates and brightness value from 0 to 1
+        to a CSS hex color."""
         r, g, b = self.color.getRGBFromXYAndBrightness(x, y, bri)
         return self.color.rgbToHex(r, g, b)
+
+    def xyToRGB(self, x, y, bri=1):
+        """Converts CIE 1931 x and y coordinates and brightness value from 0 to 1
+        to a CSS hex color."""
+        r, g, b = self.color.getRGBFromXYAndBrightness(x, y, bri)
+        return (r, g, b)
