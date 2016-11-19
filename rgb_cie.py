@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Library for RGB / CIE1931 coversion.
 Ported and extended from Bryan Johnson's JavaScript implementation:
@@ -5,7 +6,6 @@ https://github.com/bjohnso5/hue-hacking
 
 Copyright (c) 2014 Benjamin Knight / MIT License.
 """
-# -*- coding: utf-8 -*-
 import math
 import random
 from collections import namedtuple
