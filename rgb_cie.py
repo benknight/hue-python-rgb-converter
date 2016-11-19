@@ -5,6 +5,7 @@ https://github.com/bjohnso5/hue-hacking
 
 Copyright (c) 2014 Benjamin Knight / MIT License.
 """
+# -*- coding: utf-8 -*-
 import math
 import random
 from collections import namedtuple
@@ -13,18 +14,25 @@ from collections import namedtuple
 # Represents a CIE 1931 XY coordinate pair.
 XYPoint = namedtuple('XYPoint', ['x', 'y'])
 
-# LivingColors Bloom, Aura, Light Strips and Iris
+# LivingColors Iris, Bloom, Aura, LightStrips
 GamutA = (
     XYPoint(0.704, 0.296),
     XYPoint(0.2151, 0.7106),
     XYPoint(0.138, 0.08),
 )
 
-# Hue bulbs
+# Hue A19 bulbs
 GamutB = (
     XYPoint(0.675, 0.322),
     XYPoint(0.4091, 0.518),
     XYPoint(0.167, 0.04),
+)
+
+# Hue BR30, A19 (Gen 3), Hue Go, LightStrips plus
+GamutC = (
+    XYPoint(0.692, 0.308),
+    XYPoint(0.17, 0.7),
+    XYPoint(0.153, 0.048),
 )
 
 
