@@ -30,3 +30,5 @@ from rgb_cie import GamutA # or GamutB, GamutC
 
 converter = Converter(GamutA)
 ```
+
+If no gamut is specified, defaults to Gamut B (A19 Gen 1 Hue bulbs).
