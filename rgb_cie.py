@@ -1,11 +1,10 @@
+# -*- coding: utf-8 -*-
 """
 Library for RGB / CIE1931 "x, y" coversion.
 Based on Philips implementation guidance:
 http://www.developers.meethue.com/documentation/color-conversions-rgb-xy
 Copyright (c) 2016 Benjamin Knight / MIT License.
 """
-
-# -*- coding: utf-8 -*-
 import math
 import random
 from collections import namedtuple
