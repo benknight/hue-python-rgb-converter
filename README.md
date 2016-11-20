@@ -1,4 +1,4 @@
-# Philips Hue Python RGB / CIE1931 Converter
+# Philips Hue Python RGB / CIE1931 "xy" Converter
 
 RGB conversion tool written in Python for Philips Hue.
 
