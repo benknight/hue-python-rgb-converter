@@ -15,26 +15,27 @@ XYPoint = namedtuple('XYPoint', ['x', 'y'])
 
 # LivingColors Iris, Bloom, Aura, LightStrips
 GamutA = (
-    XYPoint(0.704,  0.296),
+    XYPoint(0.704, 0.296),
     XYPoint(0.2151, 0.7106),
-    XYPoint(0.138,  0.08),
+    XYPoint(0.138, 0.08),
 )
 
 # Hue A19 bulbs
 GamutB = (
-    XYPoint(0.675,  0.322),
+    XYPoint(0.675, 0.322),
     XYPoint(0.4091, 0.518),
-    XYPoint(0.167,  0.04),
+    XYPoint(0.167, 0.04),
 )
 
 # Hue BR30, A19 (Gen 3), Hue Go, LightStrips plus
 GamutC = (
     XYPoint(0.692, 0.308),
-    XYPoint(0.17,  0.7),
+    XYPoint(0.17, 0.7),
     XYPoint(0.153, 0.048),
 )
 
-def get_light_gamut(self, modelId):
+
+def get_light_gamut(modelId):
     """Gets the correct color gamut for the provided model id.
     Docs: http://www.developers.meethue.com/documentation/supported-lights
     """
@@ -190,9 +191,9 @@ class ColorHelper:
         Z = (Y / xy_point.y) * (1 - xy_point.x - xy_point.y)
 
         # Convert to RGB using Wide RGB D65 conversion
-        r =  X * 1.612 - Y * 0.203 - Z * 0.302
-        g = -X * 0.509 + Y * 1.412 + Z * 0.066
-        b =  X * 0.026 - Y * 0.072 + Z * 0.962
+        r = X * 1.656492 - Y * 0.354851 - Z * 0.255038
+        g = -X * 0.707196 + Y * 1.655397 + Z * 0.036152
+        b = X * 0.051713 - Y * 0.121364 + Z * 1.011530
 
         # Apply reverse gamma correction
         r, g, b = map(
