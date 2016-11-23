@@ -1,4 +1,4 @@
-# Philips Hue Python RGB / CIE1931 Converter
+# Philips Hue Python RGB / CIE1931 "xy" Converter
 
 RGB conversion tool written in Python for Philips Hue.
 
@@ -19,3 +19,16 @@ Out[5]: [0.3706941388849757, 0.19786410488389355]
 In [6]: converter.xyToHEX(0.3991853917195425, 0.498424689144739, bri=0.8)
 Out[6]: 'e9e860'
 ```
+
+## Gamuts
+
+The conversion tool support three gamuts: Gamut A, B, and C, [documented here](http://www.developers.meethue.com/documentation/supported-lights).  Use them as follows:
+
+```python
+from rgb_cie import Converter
+from rgb_cie import GamutA # or GamutB, GamutC
+
+converter = Converter(GamutA)
+```
+
+If no gamut is specified, defaults to Gamut B (A19 Gen 1 Hue bulbs).
