@@ -3,7 +3,7 @@
 RGB conversion tool written in Python for Philips Hue.
 
 ```python
-In [1]: from rgb_cie import Converter
+In [1]: from rgb_xy import Converter
 
 In [2]: converter = Converter()
 		
@@ -25,8 +25,8 @@ Out[6]: 'e9e860'
 The conversion tool support three gamuts: Gamut A, B, and C, [documented here](http://www.developers.meethue.com/documentation/supported-lights).  Use them as follows:
 
 ```python
-from rgb_cie import Converter
-from rgb_cie import GamutA # or GamutB, GamutC
+from rgb_xy import Converter
+from rgb_xy import GamutA # or GamutB, GamutC
 
 converter = Converter(GamutA)
 ```
