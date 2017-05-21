@@ -34,18 +34,6 @@ CLASSIFIERS = [
     'Programming Language :: Python',
 ]
 
-def read_file(name):
-    filepath = os.path.join(
-        os.path.dirname(os.path.realpath(__file__)),
-        name
-    )
-    data = open(filepath)
-    try:
-        return data.read()
-    except IOError:
-        print "could not read %r" % name
-        data.close()
-
 def setup_package():
     # Some helper variables
     version = VERSION
@@ -62,7 +50,6 @@ def setup_package():
         license=LICENSE,
         keywords='philips hue light rgb xy',
         packages=setuptools.find_packages(),
-        long_description=read_file('README.md'),
         install_requires=install_reqs
     )
 
