@@ -9,7 +9,7 @@ import math
 import random
 from collections import namedtuple
 
-__version__ = '0.4'
+__version__ = '0.5'
 
 # Represents a CIE 1931 XY coordinate pair.
 XYPoint = namedtuple('XYPoint', ['x', 'y'])
