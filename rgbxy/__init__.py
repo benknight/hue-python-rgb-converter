@@ -147,9 +147,13 @@ class ColorHelper:
         dy = one.y - two.y
         return math.sqrt(dx * dx + dy * dy)
 
-    def get_xy_point_from_rgb(self, red, green, blue):
+    def get_xy_point_from_rgb(self, red_i, green_i, blue_i):
         """Returns an XYPoint object containing the closest available CIE 1931 x, y coordinates
         based on the RGB input values."""
+
+        red = red_i / 255.0
+        green = green_i / 255.0
+        blue = blue_i / 255.0
 
         r = ((red + 0.055) / (1.0 + 0.055))**2.4 if (red > 0.04045) else (red / 12.92)
         g = ((green + 0.055) / (1.0 + 0.055))**2.4 if (green > 0.04045) else (green / 12.92)
