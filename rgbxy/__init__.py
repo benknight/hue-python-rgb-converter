@@ -9,7 +9,7 @@ import math
 import random
 from collections import namedtuple
 
-__version__ = '0.5'
+__version__ = '0.5.1'
 
 # Represents a CIE 1931 XY coordinate pair.
 XYPoint = namedtuple('XYPoint', ['x', 'y'])
@@ -38,13 +38,13 @@ GamutC = (
 
 def get_light_gamut(modelId):
     """Gets the correct color gamut for the provided model id.
-    Docs: http://www.developers.meethue.com/documentation/supported-lights
+    Docs: https://developers.meethue.com/develop/hue-api/supported-devices/
     """
-    if modelId in ('LST001', 'LLC010', 'LLC011', 'LLC012', 'LLC006', 'LLC007', 'LLC013'):
+    if modelId in ('LST001', 'LLC005', 'LLC006', 'LLC007', 'LLC010', 'LLC011', 'LLC012', 'LLC013', 'LLC014'):
         return GamutA
     elif modelId in ('LCT001', 'LCT007', 'LCT002', 'LCT003', 'LLM001'):
         return GamutB
-    elif modelId in ('LCT010', 'LCT014', 'LCT011', 'LLC020', 'LST002'):
+    elif modelId in ('LCT010', 'LCT011', 'LCT012', 'LCT014', 'LCT015', 'LCT016', 'LLC020', 'LST002'):
         return GamutC
     else:
         raise ValueError
