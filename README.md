@@ -22,7 +22,7 @@ Out[6]: 'e9e860'
 
 ## Gamuts
 
-The conversion tool support three gamuts: Gamut A, B, and C, [documented here](http://www.developers.meethue.com/documentation/supported-lights).  Use them as follows:
+The conversion tool support three gamuts: Gamut A, B, and C, [documented here](https://developers.meethue.com/develop/hue-api/supported-devices/).  Use them as follows:
 
 ```python
 from rgbxy import Converter
