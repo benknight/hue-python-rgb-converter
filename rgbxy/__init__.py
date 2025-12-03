@@ -2,7 +2,7 @@
 """
 Library for RGB / CIE1931 "x, y" coversion.
 Based on Philips implementation guidance:
-http://www.developers.meethue.com/documentation/color-conversions-rgb-xy
+https://developers.meethue.com/develop/application-design-guidance/color-conversion-formulas-rgb-to-xy-and-back/
 Copyright (c) 2016 Benjamin Knight / MIT License.
 """
 import math
@@ -14,21 +14,21 @@ __version__ = '0.5.1'
 # Represents a CIE 1931 XY coordinate pair.
 XYPoint = namedtuple('XYPoint', ['x', 'y'])
 
-# LivingColors Iris, Bloom, Aura, LightStrips
+# Legacy lights - LivingColors Iris, Bloom, Aura, LightStrips
 GamutA = (
     XYPoint(0.704, 0.296),
     XYPoint(0.2151, 0.7106),
     XYPoint(0.138, 0.08),
 )
 
-# Hue A19 bulbs
+# Older model Hue lights - older A19 bulbs etc.
 GamutB = (
     XYPoint(0.675, 0.322),
     XYPoint(0.4091, 0.518),
     XYPoint(0.167, 0.04),
 )
 
-# Hue BR30, A19 (Gen 3), Hue Go, LightStrips plus
+# All newer model Hue lights - BR30, A19 (Gen 3), Go, LightStrips plus
 GamutC = (
     XYPoint(0.692, 0.308),
     XYPoint(0.17, 0.7),
@@ -39,6 +39,9 @@ GamutC = (
 def get_light_gamut(modelId):
     """Gets the correct color gamut for the provided model id.
     Docs: https://developers.meethue.com/develop/hue-api/supported-devices/
+          'NOTE: The supported light table will not be maintained due to the large expansion 
+           and dynamic nature of new/updated Hue products. 
+           Instead, the information is readily available in the Light properties via API.'
     """
     if modelId in ('LST001', 'LLC005', 'LLC006', 'LLC007', 'LLC010', 'LLC011', 'LLC012', 'LLC013', 'LLC014'):
         return GamutA
@@ -252,9 +255,7 @@ class Converter:
         return (r, g, b)
 
     def get_random_xy_color(self):
-        """Returns the approximate CIE 1931 x,y coordinates represented by the
-        supplied hexColor parameter, or of a random color if the parameter
-        is not passed."""
+        """Returns the approximate CIE 1931 x,y coordinates of a random color."""
         r = self.color.random_rgb_value()
         g = self.color.random_rgb_value()
         b = self.color.random_rgb_value()
